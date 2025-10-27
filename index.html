@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerenciador de Tarefas</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/script.js" defer></script>
+</head>
+<body>
+  <h1>Gerenciador de Tarefas</h1>
+
+  <form id="loanForm">
+    <input type="text" id="item" placeholder="Tarefas" required>
+    <input type="text" id="person" placeholder="Nome/Atividade" required>
+    <label for="date">Data </label>
+    <input type="date" id="date" required>
+    <button type="submit">Registrar Tarefas</button>
+  </form>
+
+  <h2>Tarefas Ativas</h2>
+  <ul id="loanList"></ul>
+
+  <button id="btnExportar">
+    Gerar Relatorio
+  </button>
+</body>
+</html>
