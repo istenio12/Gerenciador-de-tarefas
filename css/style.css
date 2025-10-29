@@ -69,3 +69,18 @@ h1 {
   margin-bottom: 20px;
   color: #1976d2;
 }
+.status-btn{
+  padding: 4px 9px;
+  border: nome;
+  border-radius: 3px;
+  color: #fff ;
+  font-weight: bold;
+  cursor: default;
+}
+.status-verde{
+  background-color: #28a745;
+}
+
+.status-vermelho{
+  background-color: #ce5835;
+}
