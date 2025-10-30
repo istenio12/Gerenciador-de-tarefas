@@ -1,38 +1,51 @@
 console.log("Script carregado com sucesso!");
-
+//botão para gerar relatorio
 document.getElementById('btnExportar').addEventListener('click', () => {
-  const dados = localStorage.getItem('loans');
-  if (!dados) {
-    alert('Nenhum dado encontrado com a chave "loans".');
+  const ativos = JSON.parse(localStorage.getItem('loans')) || [];
+  const historico = JSON.parse(localStorage.getItem('historico')) || [];
+
+if (ativos.length === 0 && historico.length === 0) {
+    alert('Nenhum dado encontrado.');
     return;
   }
 
-  let lista = JSON.parse(dados);
-
   // Monta a tabela HTML
-  let tabelaHTML = '<table border="1"><tr><th>Nome</th><th>Tarefa</th><th>Inicio</th><th>Prazo</th><th>Status</th></tr>';
-  
-lista.forEach(obj => {
+  let tabelaHTML = `
+  <meta charset="UTF-8">
+  <table border="1" style="border-collapse: collapse;">
+  <tr style="background-color:#333;color:#fff;">
+  <tr><th>Nome</th><th>Tarefa</th><th>Inicio</th><th>Prazo</th><th>Status</th><th>Encerrado em</th></tr>`;
+  //ativos
+  ativos.forEach(obj => {
     const hoje = new Date();
     const inicio = new Date(obj.startDate);
     const prazo = new Date(obj.endDate);
-    let status = '';
+    let status = hoje < inicio ? 'nao iniciado' : hoje <= prazo ? 'Em andamento' : 'Atrasado';
+    let cor = status === 'Atrasado' ? '#dc3545' : '#28a745';
 
-    if(inicio) {
-      status = 'Nao iniciado';
-    }else if (hoje <= prazo){
-      status = 'Em andamento';
-    }else{
-      status = 'Atrasado';
-    }
-        tabelaHTML += `<tr>
+
+    tabelaHTML += `<tr>
       <td>${obj.person || ''}</td>
       <td>${obj.item || ''}</td>
       <td>${obj.startDate || ''}</td>
       <td>${obj.endDate || ''}</td>
-      <td>${status}</td>
+      <td style="color:${cor};font-weight:bold;">${status}</td>
+      <td>-</td>
     </tr>`;
   });
+
+  //Historico
+  historico.forEach(obj => {
+    tabelaHTML += `<tr>
+      <td>${obj.person}</td>
+      <td>${obj.item}</td>
+      <td>${obj.startDate}</td>
+      <td>${obj.endDate}</td>
+      <td style="color:#6c757d;font-weight:bold;">Encerrado</td>
+      <td>${obj.encerradoEm}</td>
+    </tr>`;
+  });
+
 
   tabelaHTML += '</table>';
 
@@ -52,31 +65,30 @@ document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById('loanForm');
   const loanList = document.getElementById('loanList');
 
-  
-function loadLoans() {
-  const loans = JSON.parse(localStorage.getItem('loans')) || [];
-  loanList.innerHTML = '';
-  loans.forEach((loan, index) => {
-    const hoje = new Date();
-    const inicio = new Date(loan.startDate);
-    const prazo = new Date(loan.endDate);
 
-    let statusTexto = '';
-    let statusClasse = '';
+  function loadLoans() {
+    const loans = JSON.parse(localStorage.getItem('loans')) || [];
+    loanList.innerHTML = '';
+    loans.forEach((loan, index) => {
+      const hoje = new Date();
+      const inicio = new Date(loan.startDate);
+      const prazo = new Date(loan.endDate);
 
-    if (hoje < inicio) {
-      statusTexto = 'Nao iniciado';
-      statusClasse = 'status-verde';
-    } else if (hoje <= prazo) {
-      statusTexto = 'Em andamento';
-      statusClasse = 'status-verde';
-    } else {
-      statusTexto = 'Atrasado';
-      statusClasse = 'status-vermelho';
-    }
-    
-    const li = document.createElement('li');
+      let statusTexto = '';
+      let statusClasse = '';
 
+      if (hoje < inicio) {
+        statusTexto = 'Nao iniciado';
+        statusClasse = 'status-verde';
+      } else if (hoje <= prazo) {
+        statusTexto = 'Em andamento';
+        statusClasse = 'status-verde';
+      } else {
+        statusTexto = 'Atrasado';
+        statusClasse = 'status-vermelho';
+      }
+
+      const li = document.createElement('li');
       li.innerHTML = `
         
 <strong>${loan.item}</strong> para <em>${loan.person}</em>
@@ -84,13 +96,13 @@ function loadLoans() {
       <span class="status-btn
       ${statusClasse}">${statusTexto}</span>
     `;
+      //Botão para finalizar a tarefa
+      const button = document.createElement("button");
+      button.textContent = "Resolver";
+      button.addEventListener("click", () => returnItem(index));
 
-    const button = document.createElement("button");
-    button.textContent = "Resolver";
-    button.addEventListener("click", () => returnItem(index));
+      li.appendChild(button)
 
-li.appendChild(button)
-   
       loanList.appendChild(li);
     });
   }
@@ -105,8 +117,14 @@ li.appendChild(button)
 
   function returnItem(index) {
     const loans = JSON.parse(localStorage.getItem('loans')) || [];
-    loans.splice(index, 1);
+    const historico = JSON.parse(localStorage.getItem('historico')) || [];
+
+    // Remove do ativo e adiciona ao histórico
+  const tarefaEncerrada = loans.splice(index, 1)[0];
+  historico.push({ ...tarefaEncerrada, encerradoEm: new Date().toISOString().split('T')[0] });
+  
     localStorage.setItem('loans', JSON.stringify(loans));
+    localStorage.setItem('historico', JSON.stringify(historico));
     loadLoans();
   }
 
