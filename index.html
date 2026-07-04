@@ -3,27 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <title>Gerenciador de Tarefas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script src="js/script.js" defer></script>
 </head>
 <body>
-  <h1>Gerenciador de Tarefas</h1>
 
-  <form id="loanForm">
-    <input type="text" id="item" placeholder="Tarefas" required>
-    <input type="text" id="person" placeholder="Nome/Atividade" required>
-    <label for="startDate">Data </label>
-    <input type="date" id="startDate" required>
-    <label for="endDate">Prazo</label>
-    <input type="date" id="endDate" required>
-    <button type="submit">Registrar Tarefas</button>
-  </form>
+  <div class="wrap">
 
-  <h2>Tarefas Ativas</h2>
-  <ul id="loanList"></ul>
+    <div class="header">
+      <h1>Gerenciador de<br>Tarefas</h1>
+      <div class="bulb">💡</div>
+    </div>
 
-  <button id="btnExportar">
-    Gerar Relatorio
-  </button>
+    <div class="grid">
+
+      <!-- COLUNA ESQUERDA: FORM -->
+      <div class="panel">
+        <h2>Registrar nova tarefa</h2>
+        <form id="loanForm">
+          <label for="item">Tarefa</label>
+          <input type="text" id="item" placeholder="Ex: Projeto nutricional" required>
+
+          <label for="person">Nome/Atividade</label>
+          <input type="text" id="person" placeholder="Ex: Fazer receitas da nutri" required>
+
+          <label for="urgency">Nível de urgência</label>
+          <select id="urgency" required>
+            <option value="" disabled selected>Selecione...</option>
+            <option value="sem-pressa">Sem pressa</option>
+            <option value="medio">Médio</option>
+            <option value="urgente">Urgente</option>
+          </select>
+
+          <label for="startDate">Data</label>
+          <input type="date" id="startDate" required>
+
+          <label for="endDate">Prazo</label>
+          <input type="date" id="endDate" required>
+
+          <button type="submit" class="btn">Registrar Tarefas</button>
+        </form>
+      </div>
+
+      <!-- COLUNA DIREITA: LISTA -->
+      <div class="panel">
+        <h2>Tarefas Ativas</h2>
+        <ul id="loanList"></ul>
+        <p id="emptyState" class="empty-state">Nenhuma tarefa por aqui ainda. Registre a primeira ao lado! ✨</p>
+
+        <button id="btnExportar" class="btn secondary">Gerar Relatorio</button>
+      </div>
+
+    </div>
+  </div>
+
 </body>
+
+
+<footer class="rodape">
+    <p>⚠️ Versão em desenvolvimento — podem ocorrer erros.</p>
+    <p>Backend: <strong>Istenio Nascimento</strong> · Frontend: <strong>Jéssica Filinto</strong></p>
+</footer>
+
+
+
 </html>
